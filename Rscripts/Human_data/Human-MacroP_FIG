@@ -1,0 +1,80 @@
+library(Seurat)
+library(BPCells)
+library(ggplot2)
+library(Matrix)
+library(tidyverse)
+library(viridis)
+library(patchwork)
+library(data.table)
+library(dittoSeq)
+library(harmony)
+library(RColorBrewer)
+
+##We performed an initial annotation of the various clusters based on the integrated marker genes; for full details, please see the attached “Human All Cells Feature Gene##
+
+CDF_Data <- readRDS("E:/XXXXXXXXXXXXXXX/CDF_Data0704.rds")
+CDF_Macro=subset(CDF_Data, idents = c("2","9"))
+CDF_Macro <- NormalizeData(CDF_Macro, verbose = FALSE)
+CDF_Macro <-FindVariableFeatures(CDF_Macro, selection.method = "vst", nfeatures = 2000)
+CDF_Macro <-ScaleData(CDF_Macro,verbose = FALSE) 
+CDF_Macro <-RunPCA(CDF_Macro, verbose = FALSE)
+options(repr.plot.height = 2.5, repr.plot.width = 6)
+CDF_Macro <- CDF_Macro %>% 
+  RunHarmony("Library", plot_convergence = TRUE)
+VariableFeaturePlot(CDF_Macro)
+
+CDF_Macro <- CDF_Macro %>% 
+  RunUMAP(reduction = "harmony", dims = 1:25) %>% 
+  FindNeighbors(reduction = "harmony", dims = 1:25) %>% 
+  FindClusters(resolution = 0.1) %>% 
+  identity()
+CDF_Macro <- JoinLayers(CDF_Macro)
+Markers_CDF_Macro <- FindAllMarkers(CDF_Macro, only.pos = TRUE, min.pct = 0.5, logfc.threshold = 0.25)
+top10M <- Markers_CDF_Macro %>% group_by(cluster) %>% top_n(n = 10, wt = avg_log2FC)
+
+#FIG1_A_HUMAN
+Mcluster_color <- c(
+  "#B0E2FF",
+  "#006B3C", 
+  "#66CDAA", 
+  "#1E90FF",
+  "#F8C471",
+  "#F7DC6F", 
+  "#98FB98"
+)
+
+UMAPPlot(CDF_Macro, label = TRUE,ncol=4) + 
+  scale_color_manual(values = Mcluster_color) +
+  coord_fixed()
+
+DimPlot(
+  SetIdent(
+    CDF_Macro,
+    value = ifelse(CDF_Macro$seurat_clusters == 0, CDF_Macro$Condition, "Other")
+  ),
+  reduction = "umap", pt.size = 0.4
+) +
+  scale_color_manual(values = c(Control  = "#F7DC6F",
+                                AAA   = "#8E44AD",
+                                Other = "grey80")) +
+  theme_minimal()
+
+#FIG1_B_HUMAN_Data
+
+dir.create(out_dir <- "E:/sc-RNAseq/CMH_human_AAA_Integration/Results/20250624",
+           showWarnings = FALSE, recursive = TRUE)
+for (nm in c("CDF_Data", "CDF_Macro")) {
+  obj <- get(nm)
+  Idents(obj) <- "seurat_clusters"
+  write.csv(
+    as.data.frame.matrix(table(obj$Library, Idents(obj))),
+    file = file.path(out_dir, paste0(nm, "_cluster_counts.csv")),
+    row.names = TRUE
+  )
+}
+
+#FIG1_C_HUMAN
+top3M <- Markers_CDF_Macro %>% group_by(cluster) %>% top_n(n = 3, wt = avg_log2FC)
+DotPlot(CDF_Macro, features = unique(top3M$gene),cols = "PRGn",dot.scale = 5)+theme(axis.text.x = element_text(angle = 90)) +
+  coord_fixed()
+
