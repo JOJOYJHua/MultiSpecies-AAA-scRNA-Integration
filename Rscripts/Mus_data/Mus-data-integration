@@ -1,0 +1,114 @@
+library(Seurat)
+library(BPCells)
+library(ggplot2)
+library(Matrix)
+library(tidyverse)
+library(viridis)
+library(patchwork)
+library(data.table)
+library(dittoSeq)
+library(harmony)
+library(RColorBrewer)
+
+######GSE164678######
+Yang_C <- "E:/sc-RNAseq/CMH_human_AAA_Integration/Mouse/GSE164678_RAW/sham"
+Yang_C <- Read10X(data.dir = Yang_C, gene.column = 2)
+Yang_C <- CreateSeuratObject(counts = Yang_C, project = "SHAM")
+Yang_C[["Library"]] <- "Yang_C"
+Yang_C[["Condition"]] <- "SHAM"
+
+Yang_C[["percent.mt"]] <- PercentageFeatureSet(Yang_C, pattern = "^mt-")
+VlnPlot(Yang_C, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+Yang_C <- subset(Yang_C, subset = nFeature_RNA > 200 & nCount_RNA < 60000 & percent.mt < 15)
+VlnPlot(Yang_C, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+
+######GSE164678######
+Yang_AAA <- "E:/sc-RNAseq/CMH_human_AAA_Integration/Mouse/GSE164678_RAW/aaa"
+Yang_AAA <- Read10X(data.dir = Yang_AAA, gene.column = 2)
+Yang_AAA <- CreateSeuratObject(counts = Yang_AAA, project = "AAA")
+Yang_AAA[["Library"]] <- "Yang_AAA"
+Yang_AAA[["Condition"]] <- "AAA"
+Yang_AAA[["percent.mt"]] <- PercentageFeatureSet(Yang_AAA, pattern = "^mt-")
+VlnPlot(Yang_AAA, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+Yang_AAA <- subset(Yang_AAA, subset = nFeature_RNA > 200 & nCount_RNA < 60000 & percent.mt < 15)
+VlnPlot(Yang_AAA, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+
+#######GSE221789#####
+Wu_C <- "E:/sc-RNAseq/CMH_human_AAA_Integration/Mouse/GSE221789_RAW/GSM6896556_Sham_A"
+Wu_C <- Read10X(data.dir = Wu_C, gene.column = 2)
+Wu_C <- CreateSeuratObject(counts = Wu_C, project = "SHAM")
+Wu_C[["Library"]] <- "Wu_sham"
+Wu_C[["Condition"]] <- "SHAM"
+Wu_C[["percent.mt"]] <- PercentageFeatureSet(Wu_C, pattern = "^mt-")
+VlnPlot(Wu_C, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+Wu_C <- subset(Wu_C, subset = nFeature_RNA > 200 & nCount_RNA < 60000 & percent.mt < 15)
+VlnPlot(Wu_C, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+
+#######GSE221789#####
+Wu_AAA1 <- "E:/sc-RNAseq/CMH_human_AAA_Integration/Mouse/GSE221789_RAW/GSM6896558_Ang_A"
+Wu_AAA1 <- Read10X(data.dir = Wu_AAA1, gene.column = 2)
+Wu_AAA1 <- CreateSeuratObject(counts = Wu_AAA1, project = "AAA")
+Wu_AAA1[["Library"]] <- "Wu_AAA1"
+Wu_AAA1[["Condition"]] <- "AAA"
+Wu_AAA1[["percent.mt"]] <- PercentageFeatureSet(Wu_AAA1, pattern = "^mt-")
+VlnPlot(Wu_AAA1, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+Wu_AAA1 <- subset(Wu_AAA1, subset = nFeature_RNA > 200 & nCount_RNA < 60000 & percent.mt < 15)
+VlnPlot(Wu_AAA1, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+
+#######GSE221789#####
+Wu_AAA2 <- "E:/sc-RNAseq/CMH_human_AAA_Integration/Mouse/GSE221789_RAW/GSM6896560_AA0527"
+Wu_AAA2 <- Read10X(data.dir = Wu_AAA2, gene.column = 2)
+Wu_AAA2 <- CreateSeuratObject(counts = Wu_AAA2, project = "AAA")
+Wu_AAA2[["Library"]] <- "Wu_AAA2"
+Wu_AAA2[["Condition"]] <- "AAA"
+Wu_AAA2[["percent.mt"]] <- PercentageFeatureSet(Wu_AAA2, pattern = "^mt-")
+VlnPlot(Wu_AAA2, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+Wu_AAA2 <- subset(Wu_AAA2, subset = nFeature_RNA > 200 & nCount_RNA < 60000 & percent.mt < 15)
+VlnPlot(Wu_AAA2, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+
+#######GSE231306#########
+Weng_C <- "E:/sc-RNAseq/CMH_human_AAA_Integration/Mouse/GSE231306_RAW/CTR"
+Weng_C <- Read10X(data.dir = Weng_C, gene.column = 2)
+Weng_C <- CreateSeuratObject(counts = Weng_C, project = "SHAM")
+Weng_C[["Library"]] <- "Weng_C"
+Weng_C[["Condition"]] <- "SHAM"
+Weng_C[["percent.mt"]] <- PercentageFeatureSet(Weng_C, pattern = "^mt-")
+VlnPlot(Weng_C, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+Weng_C <- subset(Weng_C, subset = nFeature_RNA > 200 & nCount_RNA < 60000 & percent.mt < 15)
+VlnPlot(Weng_C, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+
+Weng_AAA <- "E:/sc-RNAseq/CMH_human_AAA_Integration/Mouse/GSE231306_RAW/AAA"
+Weng_AAA <- Read10X(data.dir = Weng_AAA, gene.column = 2)
+Weng_AAA <- CreateSeuratObject(counts = Weng_AAA, project = "AAA")
+Weng_AAA[["Library"]] <- "Weng_AAA"
+Weng_AAA[["Condition"]] <- "AAA"
+Weng_AAA[["percent.mt"]] <- PercentageFeatureSet(Weng_AAA, pattern = "^mt-")
+VlnPlot(Weng_AAA, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+Weng_AAA <- subset(Weng_AAA, subset = nFeature_RNA > 200 & nCount_RNA < 60000 & percent.mt < 15)
+VlnPlot(Weng_AAA, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+
+YWW_Data <- merge(
+  x = Yang_C,
+  y = list(
+    Yang_C, Yang_AAA, Wu_C, Wu_AAA1, Wu_AAA2, Weng_C,
+    Weng_AAA
+  ))
+
+YWW_Data <- NormalizeData(YWW_Data, verbose = FALSE)
+YWW_Data <-FindVariableFeatures(YWW_Data, selection.method = "vst", nfeatures = 2000)
+VariableFeaturePlot(YWW_Data)
+YWW_Data <-ScaleData(YWW_Data,verbose = FALSE) 
+YWW_Data <-RunPCA(YWW_Data, verbose = FALSE)
+
+options(repr.plot.height = 2.5, repr.plot.width = 6)
+YWW_Data <- YWW_Data %>% 
+  RunHarmony("Library", plot_convergence = TRUE)
+
+YWW_Data <- YWW_Data %>% 
+  RunUMAP(reduction = "harmony", dims = 1:20) %>% 
+  FindNeighbors(reduction = "harmony", dims = 1:20) %>% 
+  FindClusters(resolution = 0.25) %>% 
+  identity()
+DimPlot(YWW_Data,reduction = "umap", label = T, label.size = 4)
+DimPlot(YWW_Data,reduction = "umap", label = T, label.size = 4, group.by = "Condition")
+DimPlot(YWW_Data,reduction = "umap", label = T, label.size = 4, group.by = "Library")
