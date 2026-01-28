@@ -15,7 +15,7 @@ expression_matrixG <- Read10X(data_dirG)
 object_LDLRKO = CreateSeuratObject(counts = expression_matrixG)
 object_LDLRKO[["percent.mt"]] <- PercentageFeatureSet(object_LDLRKO, pattern = "^mt-")
 VlnPlot(object_LDLRKO, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
-object_LDLRKO <- subset(object_LDLRKO, subset = nFeature_RNA > 200 & nCount_RNA < 60000 & percent.mt < 15)
+object_LDLRKO <- subset(object_LDLRKO, subset = nFeature_RNA > 200 & nCount_RNA < 16000 & percent.mt < 15)
 
 ####LDLR_Sparcl1CKO SAMPLE####
 data_dirB <- '......./LDLR_Sparcl1CKO'
