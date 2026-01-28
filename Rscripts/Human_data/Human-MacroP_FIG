@@ -12,7 +12,7 @@ library(RColorBrewer)
 
 ##We performed an initial annotation of the various clusters based on the integrated marker genes; for full details, please see the attached “Human All Cells Feature Gene##
 
-CDF_Data <- readRDS("E:/XXXXXXXXXXXXXXX/CDF_Data0704.rds")
+CDF_Data <- readRDS("CDF_Data0704.rds")
 CDF_Macro=subset(CDF_Data, idents = c("2","9"))
 CDF_Macro <- NormalizeData(CDF_Macro, verbose = FALSE)
 CDF_Macro <-FindVariableFeatures(CDF_Macro, selection.method = "vst", nfeatures = 2000)
